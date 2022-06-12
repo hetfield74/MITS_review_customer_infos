@@ -13,13 +13,13 @@
  */
 
 if (defined('FILENAME_REVIEWS') && basename($PHP_SELF) == FILENAME_REVIEWS) {
-  defined('BUTTON_SEARCH_CUSTOMER') or define('BUTTON_SEARCH_CUSTOMER', 'Zum Kundenkonto');
-  defined('HEADING_MORE_RATINGS') or define('HEADING_MORE_RATINGS', '<p>Weitere Rezensionen von diesem Kunden</p>');
+  defined('BUTTON_SEARCH_CUSTOMER') or define('BUTTON_SEARCH_CUSTOMER', 'To the customer account');
+  defined('HEADING_MORE_RATINGS') or define('HEADING_MORE_RATINGS', '<p>Further reviews from this customer</p>');
 }
 
 if (defined('FILENAME_CUSTOMERS') && basename($PHP_SELF) == FILENAME_CUSTOMERS) {
-  defined('TABLE_HEADING_PRODUCTS') or define('TABLE_HEADING_PRODUCTS', 'Artikel');
-  defined('TABLE_HEADING_RATING') or define('TABLE_HEADING_RATING', 'Bewertung');
-  defined('HEADING_LAST_RATINGS_LIMIT') or define('HEADING_LAST_RATINGS_LIMIT', '<p>Die letzten Rezensionen des Kunden (max. %s St&uuml;ck)</p>');
-  defined('HEADING_LAST_RATINGS') or define('HEADING_LAST_RATINGS', '<p>Die letzten Rezensionen des Kunden</p>');
+  defined('TABLE_HEADING_PRODUCTS') or define('TABLE_HEADING_PRODUCTS', 'Article');
+  defined('TABLE_HEADING_RATING') or define('TABLE_HEADING_RATING', 'Review');
+  defined('HEADING_LAST_RATINGS_LIMIT') or define('HEADING_LAST_RATINGS_LIMIT', '<p>The last reviews of the customer (max. %s piece)</p>');
+  defined('HEADING_LAST_RATINGS') or define('HEADING_LAST_RATINGS', '<p>The last reviews of the customer</p>');
 }

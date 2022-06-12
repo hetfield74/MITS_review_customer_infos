@@ -15,7 +15,7 @@
 $mits_show_max_reviews = 0; // Wieviele Bewertungen sollen beim Kunden max. angezeigt werden? 0 bedeutet keine Limitierung!
 
 if (defined('FILENAME_REVIEWS') && basename($PHP_SELF) == FILENAME_REVIEWS) {
-  if (is_object($rInfo) && isset($rInfo->customers_id) && !empty($rInfo->customers_id) && $rInfo->customers_id > 0) {
+  if (isset($rInfo) && is_object($rInfo) && isset($rInfo->customers_id) && !empty($rInfo->customers_id) && $rInfo->customers_id > 0) {
     $email_query = xtc_db_query("SELECT customers_email_address, customers_firstname, customers_lastname FROM " . TABLE_CUSTOMERS . " WHERE customers_id = " . $rInfo->customers_id);
     $email = xtc_db_fetch_array($email_query);
     $email_address = ($email['customers_email_address'] != '') ? $email['customers_email_address'] : '';
@@ -100,7 +100,7 @@ if (defined('FILENAME_REVIEWS') && basename($PHP_SELF) == FILENAME_REVIEWS) {
 }
 
 if (defined('FILENAME_CUSTOMERS') && basename($PHP_SELF) == FILENAME_CUSTOMERS) {
-  if (is_object($cInfo) && isset($cInfo->customers_id) && !empty($cInfo->customers_id)) {
+  if (isset($cInfo) && is_object($cInfo) && isset($cInfo->customers_id) && !empty($cInfo->customers_id)) {
     $MITS_LastCustomerReview = $mits_list_last_reviews = '';
     if ($cInfo->number_of_reviews > 0) {
       $mits_list_last_reviews = '<table class="tableBoxCenter collapse">
