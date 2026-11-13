@@ -20,11 +20,12 @@ if (defined('FILENAME_REVIEWS') && basename($PHP_SELF) == FILENAME_REVIEWS) {
     $email = xtc_db_fetch_array($email_query);
     $email_address = ($email['customers_email_address'] != '') ? $email['customers_email_address'] : '';
     $mits_customer_info_button = $gift_button = '';
+    $customer_name_safe = encode_htmlspecialchars((string)$email['customers_firstname'] . ' ' . (string)$email['customers_lastname'], ENT_QUOTES);
     if ($email_address != '') {
-      $mits_customer_info_button = '<p class="">' . TABLE_HEADING_CUSTOMER . ': ' . $email['customers_firstname'] . ' ' . $email['customers_lastname'] . '</p>
-      <a class="button" onclick="this.blur();" href="' . xtc_href_link(FILENAME_CUSTOMERS, xtc_get_all_get_params(array('cID', 'action', 'oID', 'page', 'status', 'asb', 'search', 'rID')) . 'cID=' . $rInfo->customers_id . '&search=' . $email_address . '&asb=asb') . '">' . BUTTON_SEARCH_CUSTOMER . '</a> 
+      $mits_customer_info_button = '<p class="">' . TABLE_HEADING_CUSTOMER . ': ' . $customer_name_safe . '</p>
+      <a class="button" onclick="this.blur();" href="' . xtc_href_link(FILENAME_CUSTOMERS, xtc_get_all_get_params(array('cID', 'action', 'oID', 'page', 'status', 'asb', 'search', 'rID')) . 'cID=' . (int)$rInfo->customers_id . '&search=' . rawurlencode((string)$email_address) . '&asb=asb') . '">' . BUTTON_SEARCH_CUSTOMER . '</a> 
       <a class="button" onclick="this.blur();" href="' . xtc_href_link(FILENAME_ORDERS, 'cID=' . $rInfo->customers_id) . '">' . BUTTON_ORDERS . '</a> 
-      <a class="button" onclick="this.blur();" href="' . xtc_href_link(FILENAME_MAIL, xtc_get_all_get_params(array('customer')) . 'customer=' . $email_address) . '">' . BUTTON_EMAIL . '</a>';
+      <a class="button" onclick="this.blur();" href="' . xtc_href_link(FILENAME_MAIL, xtc_get_all_get_params(array('customer')) . 'customer=' . rawurlencode((string)$email_address)) . '">' . BUTTON_EMAIL . '</a>';
       if (defined('ACTIVATE_GIFT_SYSTEM') && ACTIVATE_GIFT_SYSTEM == 'true') {
         $gift_button = '<a class="button" href="'.xtc_href_link(FILENAME_GV_MAIL, 'cID='.$rInfo->customers_id).'">'.BUTTON_SEND_COUPON.'</a>';
       }
@@ -48,14 +49,14 @@ if (defined('FILENAME_REVIEWS') && basename($PHP_SELF) == FILENAME_REVIEWS) {
       if (xtc_db_num_rows($reviews_query) > 0) {
         $mits_list_last_reviews = '<table class="tableBoxCenter collapse">
         <tr class="dataTableHeadingRow">
-          <td class="dataTableHeadingContent txta-l">' . TABLE_HEADING_PRODUCTS . '</td>
-          <td class="dataTableHeadingContent txta-r">' .  TABLE_HEADING_RATING . '</td>
+          <td class="dataTableHeadingContent txta-l">' . (defined('TABLE_HEADING_PRODUCTS') ? TABLE_HEADING_PRODUCTS : 'Artikel') . '</td>
+          <td class="dataTableHeadingContent txta-r">' .  (defined('TABLE_HEADING_RATING') ? TABLE_HEADING_RATING : 'Bewertung') . '</td>
         </tr>';
         while ($reviews = xtc_db_fetch_array($reviews_query)) {
           $mits_list_last_reviews .= '
           <tr>
             <td class="dataTableContent txta-l">
-              <a onclick="this.blur();" href="' . xtc_href_link(FILENAME_REVIEWS, 'page=' . $page . '&rID=' . $reviews['reviews_id'] . '&action=edit') . '">' . $reviews['products_name'] . '</a>
+              <a onclick="this.blur();" href="' . xtc_href_link(FILENAME_REVIEWS, 'page=' . (int)$page . '&rID=' . (int)$reviews['reviews_id'] . '&action=edit') . '">' . encode_htmlspecialchars((string)$reviews['products_name'], ENT_QUOTES) . '</a>
             </td>
             <td class="dataTableContent txta-r" align="right">' . xtc_image(DIR_WS_IMAGES . 'stars_' . $reviews['reviews_rating'] . '.png') . '</td>
           </tr>';
@@ -69,8 +70,8 @@ if (defined('FILENAME_REVIEWS') && basename($PHP_SELF) == FILENAME_REVIEWS) {
       ?>
       <script>
         $(document).ready(function () {
-          $('.boxRight .contentTable:first').after('<?php echo $MITS_ReviewCustomerInfo;?>');
-          <?php if ($MITS_LastCustomerReview != '') { ?>$('.boxRight .contentTable:last').after('<?php echo $MITS_LastCustomerReview;?>'); <?php } ?>
+          $('.boxRight .contentTable:first').after(<?php echo json_encode($MITS_ReviewCustomerInfo, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE); ?>);
+          <?php if ($MITS_LastCustomerReview != '') { ?>$('.boxRight .contentTable:last').after(<?php echo json_encode($MITS_LastCustomerReview, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE); ?>); <?php } ?>
         });
       </script>
       <style>
@@ -102,7 +103,7 @@ if (defined('FILENAME_REVIEWS') && basename($PHP_SELF) == FILENAME_REVIEWS) {
 if (defined('FILENAME_CUSTOMERS') && basename($PHP_SELF) == FILENAME_CUSTOMERS) {
   if (isset($cInfo) && is_object($cInfo) && isset($cInfo->customers_id) && !empty($cInfo->customers_id)) {
     $MITS_LastCustomerReview = $mits_list_last_reviews = '';
-    if ($cInfo->number_of_reviews > 0) {
+    if (isset($cInfo->number_of_reviews) && $cInfo->number_of_reviews > 0) {
       $mits_list_last_reviews = '<table class="tableBoxCenter collapse">
         <tr class="dataTableHeadingRow">
           <td class="dataTableHeadingContent txta-l">' . TABLE_HEADING_PRODUCTS . '</td>
